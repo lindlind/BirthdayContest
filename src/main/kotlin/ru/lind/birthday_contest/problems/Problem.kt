@@ -1,25 +1,27 @@
 package ru.lind.birthday_contest.problems
 
-import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.DateTime
 import ru.lind.birthday_contest.database.entities.DbAttempt
 import ru.lind.birthday_contest.database.entities.DbTest
 import ru.lind.birthday_contest.database.queries.AttemptQueries
+import ru.lind.birthday_contest.database.queries.ProblemQueries
 import ru.lind.birthday_contest.database.queries.TestQueries
 import ru.lind.birthday_contest.entities.*
 import ru.lind.birthday_contest.entities.Problem
 import java.lang.IllegalArgumentException
+import kotlin.math.ceil
+import kotlin.math.roundToInt
 
 abstract class Problem: Problem {
 
-    fun getNewTest(): Test {
+    fun createNewTest(): Test {
         val input = generateTestInput()
         val test = saveTest(input)
         return test
     }
 
-    fun handleAnswer(answer: String): AnswerAttempt {
-        val test = getActualTest() ?: throw IllegalArgumentException("Test wasn't generated. Nothing to check with")
+    fun checkAnswer(answer: String): AnswerAttempt {
+        val test = getActualTest()
         val answerAttempt = saveAttempt(test.id, answer)
 
         val verdict = checkAnswer(test.input, answerAttempt.answer)
@@ -29,11 +31,19 @@ abstract class Problem: Problem {
         return answerAttempt
     }
 
-    abstract fun calculateReward(answerId: Int): Long
+    fun calculateReward(answerId: Int): Int {
+        val dbPriceInfo = ProblemQueries.getPriceInfo(answerId)
+        return dbPriceInfo?.let {
+            var price = it.problemPrice.toDouble()
+            price *= it.attemptPricePercentage.toDouble() / 100
+            price *= it.testPricePercentage.toDouble() / 100
+            ceil(price).roundToInt()
+        } ?: 0
+    }
 
-    private fun getActualTest(): Test? {
+    fun getActualTest(): Test {
         val dbTest = TestQueries.getLastCreated(problemId)
-        return dbTest?.let { Test(it) }
+        return dbTest?.let { Test(it) } ?: throw IllegalArgumentException("Test wasn't generated")
     }
 
     private fun saveTest(input: String): Test {

@@ -9,10 +9,6 @@ class LabyrinthWithTeleportsProblem internal constructor(
     override val price: Int
 ) : Problem() {
 
-    override fun calculateReward(answerId: Int): Long {
-        TODO("Not yet implemented")
-    }
-
     override fun generateTestInput(): String {
         TODO("Not yet implemented")
     }
