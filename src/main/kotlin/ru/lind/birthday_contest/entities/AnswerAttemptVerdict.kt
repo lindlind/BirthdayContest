@@ -1,6 +1,7 @@
 package ru.lind.birthday_contest.entities
 
 import com.google.gson.annotations.SerializedName
+import ru.lind.birthday_contest.database.schema.DbEnum
 
 enum class AnswerAttemptVerdict {
 
@@ -13,5 +14,11 @@ enum class AnswerAttemptVerdict {
     @SerializedName("REJECTED")
     REJECTED,
     ;
+
+    companion object: DbEnum<AnswerAttemptVerdict> {
+
+        override fun get(value: String) = values().first { value == it.name }
+
+    }
 
 }
