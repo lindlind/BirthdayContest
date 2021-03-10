@@ -34,6 +34,9 @@ fun Application.main() {
         exception<IllegalArgumentException> { cause ->
             call.respond(HttpStatusCode.BadRequest, cause.message ?: "Bad Request")
         }
+        exception<TooManyRequestsException> { cause ->
+            call.respond(HttpStatusCode.TooManyRequests)
+        }
         exception<Throwable> { cause ->
             call.respond(HttpStatusCode.InternalServerError)
         }

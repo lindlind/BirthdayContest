@@ -2,7 +2,7 @@ package ru.lind.birthday_contest.problems
 
 import ru.lind.birthday_contest.models.AnswerAttemptVerdict
 
-class GameOfLifeProblem internal constructor(
+class GameOfLifeProblem private constructor(
     override val problemId: Int,
     override val name: String,
     override val statement: String,
@@ -13,7 +13,7 @@ class GameOfLifeProblem internal constructor(
         TODO("Not yet implemented")
     }
 
-    override fun checkAnswer(input: String, answer: String): AnswerAttemptVerdict {
+    override fun checkAnswer(input: String, answer: String): Pair<AnswerAttemptVerdict, String?> {
         TODO("Not yet implemented")
     }
 

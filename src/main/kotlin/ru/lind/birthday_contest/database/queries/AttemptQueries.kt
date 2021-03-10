@@ -17,15 +17,17 @@ object AttemptQueries {
             it[pricePercentage] = attempt.pricePercentage
             it[createdAt] = attempt.createdAt
             it[verdict] = attempt.verdict
+            it[comment] = attempt.comment
         }
     }
 
-    fun updateVerdict(attemptId: Int?, verdict: AnswerAttemptVerdict) = transaction {
+    fun updateVerdict(attemptId: Int?, verdict: AnswerAttemptVerdict, comment: String?) = transaction {
         attemptId?.let {
             AttemptsTable.update( {
                 AttemptsTable.attemptId eq attemptId
             } ) {
                 it[AttemptsTable.verdict] = verdict
+                it[AttemptsTable.comment] = comment
             }
         }
     }

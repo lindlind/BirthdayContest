@@ -24,10 +24,11 @@ abstract class Problem: Problem {
         val test = getActualTest() ?: throw IllegalArgumentException("Test wasn't generated")
         val answerAttempt = saveAttempt(test.id, answer)
 
-        val verdict = checkAnswer(test.input, answerAttempt.answer)
+        val (verdict, comment) = checkAnswer(test.input, answerAttempt.answer)
         answerAttempt.verdict = verdict
+        answerAttempt.comment = comment
 
-        updateVerdict(answerAttempt.id, verdict)
+        updateVerdict(answerAttempt.id, verdict, comment)
         return answerAttempt
     }
 
@@ -77,13 +78,13 @@ abstract class Problem: Problem {
         return AnswerAttempt(dbAttempt)
     }
 
-    private fun updateVerdict(answerId: Int, verdict: AnswerAttemptVerdict) {
-        AttemptQueries.updateVerdict(answerId, verdict)
+    private fun updateVerdict(answerId: Int, verdict: AnswerAttemptVerdict, comment: String?) {
+        AttemptQueries.updateVerdict(answerId, verdict, comment)
     }
 
     protected abstract fun generateTestInput(): String
 
-    protected abstract fun checkAnswer(input: String, answer: String): AnswerAttemptVerdict
+    protected abstract fun checkAnswer(input: String, answer: String): Pair<AnswerAttemptVerdict, String?>
 
     protected abstract fun calculateTestPricePercentage(testIdInProblem: Int): Int
 

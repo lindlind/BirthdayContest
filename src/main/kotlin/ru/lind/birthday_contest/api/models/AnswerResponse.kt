@@ -8,6 +8,7 @@ data class AnswerResponse(
     val id: Int,
     val time: String,
     val verdict: AnswerAttemptVerdict,
+    val comment: String? = null,
     val currentAnswerMultiplier: String,
     val reward: Int = 0
 ) {
@@ -15,6 +16,7 @@ data class AnswerResponse(
         answer.idInTest,
         answer.createdAt.toString("dd.MM.yyyy HH:mm:ss.SSS"),
         answer.verdict,
+        answer.comment,
         answer.pricePercentage.toPercentageString(),
         reward
     )

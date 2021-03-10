@@ -5,7 +5,7 @@ import ru.lind.birthday_contest.models.AnswerAttemptVerdict
 import kotlin.math.max
 import kotlin.random.Random
 
-class CheckConnectionProblem internal constructor(
+class CheckConnectionProblem private constructor(
     override val problemId: Int,
     override val name: String,
     override val statement: String,
@@ -20,11 +20,11 @@ class CheckConnectionProblem internal constructor(
             .joinToString("")
     }
 
-    override fun checkAnswer(input: String, answer: String): AnswerAttemptVerdict {
+    override fun checkAnswer(input: String, answer: String): Pair<AnswerAttemptVerdict, String?> {
         return if (input.reversed() == answer) {
-            AnswerAttemptVerdict.ACCEPTED
+            AnswerAttemptVerdict.ACCEPTED to null
         } else {
-            AnswerAttemptVerdict.REJECTED
+            AnswerAttemptVerdict.REJECTED to null
         }
     }
 
@@ -40,17 +40,17 @@ class CheckConnectionProblem internal constructor(
 
         private const val PROBLEM_ID: Int = 0
 
-         fun init() : CheckConnectionProblem {
-             val dbProblem = ProblemQueries.get(PROBLEM_ID)
-             return dbProblem?.let {
-                 CheckConnectionProblem(
-                     dbProblem.problemId,
-                     dbProblem.name,
-                     dbProblem.statement,
-                     dbProblem.price
-                 )
-             } ?: throw IllegalStateException("Can't find problem $PROBLEM_ID in database")
-         }
+        fun init(): CheckConnectionProblem {
+            val dbProblem = ProblemQueries.get(PROBLEM_ID)
+            return dbProblem?.let {
+                CheckConnectionProblem(
+                    dbProblem.problemId,
+                    dbProblem.name,
+                    dbProblem.statement,
+                    dbProblem.price
+                )
+            } ?: throw IllegalStateException("Can't find problem $PROBLEM_ID in database")
+        }
 
     }
 

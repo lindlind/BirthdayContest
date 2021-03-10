@@ -10,5 +10,6 @@ data class DbAttempt(
     val answer: String,
     val pricePercentage: Int,
     val createdAt: DateTime,
-    val verdict: AnswerAttemptVerdict
+    val verdict: AnswerAttemptVerdict,
+    val comment: String? = null
 )

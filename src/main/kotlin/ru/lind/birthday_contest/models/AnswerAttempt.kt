@@ -10,7 +10,8 @@ data class AnswerAttempt(
     val answer: String,
     val pricePercentage: Int,
     val createdAt: DateTime,
-    var verdict: AnswerAttemptVerdict
+    var verdict: AnswerAttemptVerdict,
+    var comment: String?
 ) {
     constructor(dbAttempt: DbAttempt) : this(
         dbAttempt.attemptId,
@@ -19,6 +20,7 @@ data class AnswerAttempt(
         dbAttempt.answer,
         dbAttempt.pricePercentage,
         dbAttempt.createdAt,
-        dbAttempt.verdict
+        dbAttempt.verdict,
+        dbAttempt.comment
     )
 }

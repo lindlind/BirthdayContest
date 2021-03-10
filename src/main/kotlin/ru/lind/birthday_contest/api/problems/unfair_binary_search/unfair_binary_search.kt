@@ -1,4 +1,4 @@
-package ru.lind.birthday_contest.api.problems.check_connection
+package ru.lind.birthday_contest.api.problems.unfair_binary_search
 
 import io.ktor.application.*
 import io.ktor.request.*
@@ -6,20 +6,18 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import ru.lind.birthday_contest.api.Utils.isAdmin
 import ru.lind.birthday_contest.api.Utils.assertLowFrequency
-import ru.lind.birthday_contest.api.models.AnswerResponse
-import ru.lind.birthday_contest.api.models.EndpointInfo
-import ru.lind.birthday_contest.api.models.ProblemResponse
-import ru.lind.birthday_contest.api.models.TestResponse
+import ru.lind.birthday_contest.api.models.*
 import ru.lind.birthday_contest.models.AnswerAttemptVerdict
 import ru.lind.birthday_contest.problems.CheckConnectionProblem
+import ru.lind.birthday_contest.problems.UnfairBinarySearchProblem
 
-fun Route.checkConnectionProblem(endpoint: String) = route(endpoint) {
+fun Route.unfairBinarySearchProblem(endpoint: String) = route(endpoint) {
 
-    val problem = CheckConnectionProblem.init()
+    val problem = UnfairBinarySearchProblem.init()
     val endpoints = listOf(
         EndpointInfo("GET", "/info", "Получить информацию о задаче."),
-        EndpointInfo("GET", "/test", "Получить текущий тест."),
-        EndpointInfo("POST", "/regen", "Сгенерировать и получить новый тест."),
+        EndpointInfo("GET", "/test", "Получить информацию о текущем тесте."),
+        EndpointInfo("POST", "/regen", "Сгенерировать новый тест."),
         EndpointInfo("POST", "/answer", "Отправить ответ на проверку.", "Text")
     )
 
@@ -38,14 +36,14 @@ fun Route.checkConnectionProblem(endpoint: String) = route(endpoint) {
     get("/test") {
         call.request.assertLowFrequency()
         val test = problem.getActualTest() ?: problem.createNewTest()
-        val response = TestResponse(test)
+        val response = HiddenTestResponse(test)
         call.respond(response)
     }
 
     post("/regen") {
         call.request.assertLowFrequency()
         val test = problem.createNewTest()
-        val response = TestResponse(test)
+        val response = HiddenTestResponse(test)
         call.respond(response)
     }
 

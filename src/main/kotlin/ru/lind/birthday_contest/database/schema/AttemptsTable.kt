@@ -10,5 +10,6 @@ object AttemptsTable : Table("attempts") {
     val answer = text("answer")
     val pricePercentage = integer("attempt_price_percentage")
     val verdict = enumAttemptVerdict("verdict")
+    val comment = text("comment").nullable()
     val createdAt = datetime("created_at")
 }
