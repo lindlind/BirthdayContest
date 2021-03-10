@@ -1,6 +1,6 @@
 package ru.lind.birthday_contest.problems
 
-import ru.lind.birthday_contest.entities.AnswerAttemptVerdict
+import ru.lind.birthday_contest.models.AnswerAttemptVerdict
 
 class UnfairBinarySearchProblem internal constructor(
     override val problemId: Int,

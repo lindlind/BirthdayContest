@@ -1,4 +1,4 @@
-package ru.lind.birthday_contest.entities
+package ru.lind.birthday_contest.models
 
 import org.joda.time.DateTime
 import ru.lind.birthday_contest.database.entities.DbAttempt

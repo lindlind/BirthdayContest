@@ -13,7 +13,7 @@ object ProdDatabaseSpec: DatabaseSpec {
 }
 
 object DevDatabaseSpec: DatabaseSpec {
-    override val url = ""
-    override val user = ""
-    override val password = ""
+    override val url = "jdbc:postgresql://localhost:5432/birthday_contest"
+    override val user = "postgres"
+    override val password = "12345678"
 }

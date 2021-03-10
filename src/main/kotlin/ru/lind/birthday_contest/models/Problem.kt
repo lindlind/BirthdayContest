@@ -1,4 +1,4 @@
-package ru.lind.birthday_contest.entities
+package ru.lind.birthday_contest.models
 
 interface Problem {
     val problemId: Int

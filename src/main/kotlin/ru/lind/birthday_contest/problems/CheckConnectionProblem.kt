@@ -1,8 +1,7 @@
 package ru.lind.birthday_contest.problems
 
-import ru.lind.birthday_contest.database.entities.DbProblem
 import ru.lind.birthday_contest.database.queries.ProblemQueries
-import ru.lind.birthday_contest.entities.AnswerAttemptVerdict
+import ru.lind.birthday_contest.models.AnswerAttemptVerdict
 import kotlin.math.max
 import kotlin.random.Random
 

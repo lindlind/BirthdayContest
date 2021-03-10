@@ -1,7 +1,7 @@
 package ru.lind.birthday_contest.database.entities
 
 import org.joda.time.DateTime
-import ru.lind.birthday_contest.entities.AnswerAttemptVerdict
+import ru.lind.birthday_contest.models.AnswerAttemptVerdict
 
 data class DbAttempt(
     val attemptId: Int,

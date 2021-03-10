@@ -4,7 +4,7 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import ru.lind.birthday_contest.database.entities.DbAttempt
 import ru.lind.birthday_contest.database.schema.AttemptsTable
-import ru.lind.birthday_contest.entities.AnswerAttemptVerdict
+import ru.lind.birthday_contest.models.AnswerAttemptVerdict
 
 object AttemptQueries {
 

@@ -8,6 +8,7 @@ import io.ktor.http.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.websocket.*
+import ru.lind.birthday_contest.database.Database
 import java.lang.IllegalArgumentException
 
 const val PROD_URL = ""
@@ -15,6 +16,8 @@ const val DEV_URL_DOMAIN = "localhost"
 const val DEV_URL = "$DEV_URL_DOMAIN:3000"
 
 fun Application.main() {
+    Database.devConnect()
+
     install(DefaultHeaders)
     install(CallLogging)
     install(CORS) {

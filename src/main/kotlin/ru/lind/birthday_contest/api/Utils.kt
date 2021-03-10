@@ -8,4 +8,8 @@ internal object Utils {
         return this.header("admin") == "lindvv"
     }
 
+    fun Int.toRubString() = "$this RUB"
+
+    fun Int.toPercentageString() = "$this%"
+
 }

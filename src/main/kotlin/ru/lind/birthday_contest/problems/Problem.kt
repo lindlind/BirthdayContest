@@ -6,8 +6,8 @@ import ru.lind.birthday_contest.database.entities.DbTest
 import ru.lind.birthday_contest.database.queries.AttemptQueries
 import ru.lind.birthday_contest.database.queries.ProblemQueries
 import ru.lind.birthday_contest.database.queries.TestQueries
-import ru.lind.birthday_contest.entities.*
-import ru.lind.birthday_contest.entities.Problem
+import ru.lind.birthday_contest.models.*
+import ru.lind.birthday_contest.models.Problem
 import java.lang.IllegalArgumentException
 import kotlin.math.ceil
 import kotlin.math.roundToInt
@@ -21,7 +21,7 @@ abstract class Problem: Problem {
     }
 
     fun checkAnswer(answer: String): AnswerAttempt {
-        val test = getActualTest()
+        val test = getActualTest() ?: throw IllegalArgumentException("Test wasn't generated")
         val answerAttempt = saveAttempt(test.id, answer)
 
         val verdict = checkAnswer(test.input, answerAttempt.answer)
@@ -41,9 +41,9 @@ abstract class Problem: Problem {
         } ?: 0
     }
 
-    fun getActualTest(): Test {
+    fun getActualTest(): Test? {
         val dbTest = TestQueries.getLastCreated(problemId)
-        return dbTest?.let { Test(it) } ?: throw IllegalArgumentException("Test wasn't generated")
+        return dbTest?.let { Test(it) }
     }
 
     private fun saveTest(input: String): Test {

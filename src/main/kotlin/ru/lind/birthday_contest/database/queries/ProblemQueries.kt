@@ -9,7 +9,7 @@ import ru.lind.birthday_contest.database.entities.DbProblem
 import ru.lind.birthday_contest.database.schema.AttemptsTable
 import ru.lind.birthday_contest.database.schema.ProblemsTable
 import ru.lind.birthday_contest.database.schema.TestsTable
-import ru.lind.birthday_contest.entities.AnswerAttemptVerdict
+import ru.lind.birthday_contest.models.AnswerAttemptVerdict
 
 object ProblemQueries {
 
@@ -36,7 +36,7 @@ object ProblemQueries {
 
     fun get(problemId: Int?) = transaction {
         val problemRow = problemId?.let {
-            TestsTable.select { ProblemsTable.problemId eq problemId }.firstOrNull()
+            ProblemsTable.select { ProblemsTable.problemId eq problemId }.firstOrNull()
         }
         return@transaction problemRow?.let {
             DbProblem(
