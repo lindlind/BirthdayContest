@@ -16,7 +16,7 @@ const val DEV_URL_DOMAIN = "localhost"
 const val DEV_URL = "$DEV_URL_DOMAIN:3000"
 
 fun Application.main() {
-    Database.devConnect()
+    Database.connect()
 
     install(DefaultHeaders)
     install(CallLogging)
