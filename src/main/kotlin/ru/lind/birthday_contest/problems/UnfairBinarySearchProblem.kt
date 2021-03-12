@@ -15,7 +15,7 @@ class UnfairBinarySearchProblem private constructor(
 
     override fun generateTestInput(): String {
         val now = DateTime.now()
-        val number = (1 + now.millisOfSecond) * (1 + now.minuteOfHour) * (1 + now.dayOfWeek)
+        val number = (1 + now.millisOfSecond) * (1 + now.minuteOfHour) * now.dayOfWeek
         println(number)
         return Random.nextInt(0, number).toString()
     }
@@ -37,17 +37,16 @@ class UnfairBinarySearchProblem private constructor(
 
     override fun calculateAnswerAttemptPricePercentage(answerIdInTest: Int): Int {
         return when(answerIdInTest) {
-            in 1..4 -> 100
-            5 -> 95
-            6 -> 85
-            7 -> 50
-            8 -> 10
+            in 1..5 -> 100
+            6 -> 95
+            7 -> 60
+            8 -> 20
             else -> 1
         }
     }
 
     val testMultiplierRules = "(100 - 2 * (testId - 1))%, testId = 1.."
-    val answerMultiplierRules = "attemptId = 1..4: 100%, attemptId = 5: 95%, attemptId = 6: 85%, attemptId = 7: 50%, attemptId = 8: 10%"
+    val answerMultiplierRules = "attemptId = 1..5: 100%, attemptId = 6: 95%, attemptId = 7: 60%, attemptId = 8: 20%"
 
     companion object {
 
