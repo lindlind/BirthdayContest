@@ -37,11 +37,11 @@ class LabyrinthWithTeleportsProblem private constructor(
                 'D' -> x += 1
                 'L' -> y -= 1
                 'R' -> y += 1
-                else -> return AnswerAttemptVerdict.REJECTED to "Error while parsing answer"
+                else -> throw IllegalArgumentException("Error while parsing answer")
             }
             if (isTeleport(x,y)) { x = 0; y = 0 }
             if (x * 5 + y == cell) {
-                return AnswerAttemptVerdict.ACCEPTED to "Error while parsing answer"
+                return AnswerAttemptVerdict.ACCEPTED to null
             }
         }
 

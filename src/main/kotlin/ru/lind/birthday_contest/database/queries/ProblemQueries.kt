@@ -36,21 +36,8 @@ object ProblemQueries {
         }
     }
 
-    fun getPriceInfo(problemId: Int?) = transaction {
-        val problemPrice = get(problemId)?.price ?: throw RuntimeException("Problem not found")
-        val test = TestQueries.getLastCreated(problemId)
-        val testPricePercentage = test?.pricePercentage ?: 100
-        val attempt = AttemptQueries.getLastCreated(test?.testId)
-        val attemptPricePercentage = attempt?.pricePercentage ?: 100
-        return@transaction DbPriceInfo(
-            problemPrice,
-            testPricePercentage,
-            attemptPricePercentage
-        )
-    }
-
-    fun getBestReward(problemId: Int?) = transaction {
-        return@transaction problemId?.let {
+    fun getBestReward(problemId: Int) = transaction {
+        return@transaction problemId.let {
             ComplexTable
                 .select { (ProblemsTable.problemId eq problemId) and (AttemptsTable.verdict eq AnswerAttemptVerdict.ACCEPTED) }
                 .mapNotNull { getPriceInfoByCurrentAttempt(it[AttemptsTable.attemptId]) }

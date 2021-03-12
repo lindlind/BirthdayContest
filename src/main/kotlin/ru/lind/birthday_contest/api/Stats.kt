@@ -10,16 +10,10 @@ import java.lang.IllegalArgumentException
 
 fun Route.stats(endpoint: String) = route(endpoint) {
 
-    val problemsStats = (0..5).map { Problem.getProblemStats(it) }
+    fun problemsStats() = (0..5).map { Problem.getProblemStats(it) }
 
     get {
-        call.respond(problemsStats)
-    }
-
-    post {
-        if (!call.request.isAdmin()) {
-            throw IllegalArgumentException()
-        }
+        call.respond(problemsStats())
     }
 
 }

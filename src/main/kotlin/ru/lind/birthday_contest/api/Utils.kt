@@ -6,7 +6,7 @@ import ru.lind.birthday_contest.TooManyRequestsException
 
 internal object Utils {
 
-    var lastApiQueryTime = DateTime.now()
+    var lastApiQueryTime = DateTime.now().withDate(2021, 3, 11)
 
     fun ApplicationRequest.isAdmin(): Boolean {
         return this.header("admin") == "lindvv"

@@ -7,5 +7,6 @@ data class ProblemRewardRules(
     val name: String,
     val initialReward: String,
     val testMultiplierRules: String,
-    val answerAttemptMultiplierRules: String
+    val answerAttemptMultiplierRules: String,
+    val bestAttemptReward: String
 )

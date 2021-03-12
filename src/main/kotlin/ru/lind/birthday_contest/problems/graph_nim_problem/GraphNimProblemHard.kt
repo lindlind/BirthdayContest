@@ -16,6 +16,8 @@ class GraphNimProblemHard private constructor(
     private val c = listOf(13, 22, 11, 25, 19, 22, 14, 21, 22, 19, 11, 21)
     private val t = listOf(15, 21, 9, 19, 18, 4, 21, 22, 1, 16, 21, 25)
 
+    override val minAns = 5
+
     override fun getNimSum(vararg nums: Int) = when (nums.size) {
         2 -> t[(nums[0] % 12 + 12) % 12] xor p[(nums[1] % 12 + 12) % 12]
         3 -> nums.fold(0) { acc, n -> acc xor t[(n % 12 + 12) % 12] }

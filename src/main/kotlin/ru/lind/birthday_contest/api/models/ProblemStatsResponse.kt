@@ -7,6 +7,8 @@ data class ProblemStatsResponse(
     val name: String,
     val bestAttemptReward: String,
     val initialReward: String,
+    val currentTestId: Int,
     val currentTestMultiplier: String,
-    val currentAnswerAttemptMultiplier: String
+    val lastAnswerAttemptId: Int,
+    val lastAnswerAttemptMultiplier: String
 )

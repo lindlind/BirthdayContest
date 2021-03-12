@@ -20,6 +20,8 @@ class GraphNimProblemEasy private constructor(
         acc xor p[(n % 12 + 12) % 12]
     }
 
+    override val minAns = 3
+
     companion object {
 
         private const val PROBLEM_ID: Int = 2

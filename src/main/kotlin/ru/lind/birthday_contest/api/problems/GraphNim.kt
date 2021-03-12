@@ -42,7 +42,8 @@ fun Route.graphNimProblem(endpoint: String) = route(endpoint) {
             problem.name,
             problem.price.toRubString(),
             problem.testMultiplierRules,
-            problem.answerMultiplierRules
+            problem.answerMultiplierRules,
+            problem.getBestReward().toRubString()
         )
         call.respond(response)
     }
@@ -75,12 +76,6 @@ fun Route.graphNimProblem(endpoint: String) = route(endpoint) {
         call.respond(response)
     }
 
-    post {
-        if (!call.request.isAdmin()) {
-            throw IllegalArgumentException()
-        }
-    }
-
     get("/info") {
         call.request.assertLowFrequency()
         val response = ProblemResponse(problemHard, listOf(endpointsEasy, endpointsHard).flatten())
@@ -105,10 +100,10 @@ fun Route.graphNimProblem(endpoint: String) = route(endpoint) {
     get("/easy/test") { test(problemEasy) }
     get("/hard/test") { test(problemHard) }
 
-    get("/easy/regen") { regen(problemEasy) }
-    get("/hard/regen") { regen(problemHard) }
+    post("/easy/regen") { regen(problemEasy) }
+    post("/hard/regen") { regen(problemHard) }
 
-    get("/easy/answer") { answer(problemEasy) }
-    get("/hard/answer") { answer(problemHard) }
+    post("/easy/answer") { answer(problemEasy) }
+    post("/hard/answer") { answer(problemHard) }
 
 }

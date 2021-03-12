@@ -5,6 +5,7 @@ import ru.lind.birthday_contest.api.problems.check_connection.gameOfLifeProblem
 import ru.lind.birthday_contest.api.problems.check_connection.labyrinthWithTeleportsProblem
 import ru.lind.birthday_contest.api.problems.unfair_binary_search.graphNimProblem
 import ru.lind.birthday_contest.api.problems.unfair_binary_search.unfairBinarySearchProblem
+import ru.lind.birthday_contest.api.stats
 
 fun Route.endpoints() {
 
@@ -16,6 +17,6 @@ fun Route.endpoints() {
         gameOfLifeProblem("/D")
         labyrinthWithTeleportsProblem("/E")
     }
-    help("/stats")
+    stats("/stats")
 
 }

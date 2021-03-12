@@ -8,6 +8,8 @@ import ru.lind.birthday_contest.api.Utils.isAdmin
 import ru.lind.birthday_contest.api.Utils.assertLowFrequency
 import ru.lind.birthday_contest.api.Utils.toRubString
 import ru.lind.birthday_contest.api.models.*
+import ru.lind.birthday_contest.database.entities.calculatePrice
+import ru.lind.birthday_contest.database.queries.ProblemQueries
 import ru.lind.birthday_contest.models.AnswerAttemptVerdict
 import ru.lind.birthday_contest.problems.CheckConnectionProblem
 import ru.lind.birthday_contest.problems.GameOfLifeProblem
@@ -23,12 +25,6 @@ fun Route.gameOfLifeProblem(endpoint: String) = route(endpoint) {
         EndpointInfo("POST", "/answer", "Отправить ответ на проверку.", "Text")
     )
 
-    post {
-        if (!call.request.isAdmin()) {
-            throw IllegalArgumentException()
-        }
-    }
-
     get("/info") {
         call.request.assertLowFrequency()
         val response = ProblemResponse(problem, endpoints)
@@ -41,7 +37,8 @@ fun Route.gameOfLifeProblem(endpoint: String) = route(endpoint) {
             problem.name,
             problem.price.toRubString(),
             problem.testMultiplierRules,
-            problem.answerMultiplierRules
+            problem.answerMultiplierRules,
+            problem.getBestReward().toRubString()
         )
         call.respond(response)
     }

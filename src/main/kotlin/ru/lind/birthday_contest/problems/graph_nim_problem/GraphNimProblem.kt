@@ -11,40 +11,76 @@ abstract class GraphNimProblem : Problem() {
     private val MIN_BEAM_LENGTH = 1e3.toInt()
     private val MAX_BEAM_LENGTH = 1e7.toInt()
 
+    abstract val minAns: Int
+
     final override fun generateTestInput(): String {
-        val number1 = Random.nextInt(MIN_BEAM_LENGTH, MAX_BEAM_LENGTH)
-        val number2 = Random.nextInt(MIN_BEAM_LENGTH, MAX_BEAM_LENGTH)
-        val number3 = Random.nextInt(MIN_BEAM_LENGTH, MAX_BEAM_LENGTH)
-        return "$number1 $number2 $number3"
+        lateinit var input: String
+        while (true) {
+            val number1 = Random.nextInt(MIN_BEAM_LENGTH, MAX_BEAM_LENGTH)
+            val number2 = Random.nextInt(MIN_BEAM_LENGTH, MAX_BEAM_LENGTH)
+            val number3 = Random.nextInt(MIN_BEAM_LENGTH, MAX_BEAM_LENGTH)
+            input = "$number1 $number2 $number3"
+            if (isGoodInput(input)) {
+                break
+            }
+        }
+        return input
+    }
+
+    private fun isGoodInput(input: String): Boolean {
+        for (i1 in 0 until minAns) for (i2 in 0 until minAns - i1) for (i3 in 0 until minAns - i1 - i2) {
+            if (checkAnswer(input, "$i1 $i2 $i3").first == AnswerAttemptVerdict.ACCEPTED) {
+                return false
+            }
+        }
+        return true
     }
 
     abstract fun getNimSum(vararg nums: Int): Int
 
     final override fun checkAnswer(input: String, answer: String): Pair<AnswerAttemptVerdict, String?> {
-        val numbers = input.splitToSequence(' ').map { it.toInt() % 12 }.toList()
+        val inputNumbers = input.splitToSequence(' ').map { it.toInt() % 12 }.toList()
+        val answerNumbers = answer.splitToSequence(' ').mapNotNull { it.toIntOrNull() }.toList()
+        if (answerNumbers.size != 3) {
+            throw IllegalArgumentException("Error while parsing answer")
+        }
         var expectedAnswer = 50
         for (i1 in 0..12) for (i2 in 0..12) for (i3 in 0..12) {
-            var i = 0
-            val n1 = numbers[i++] + i1
-            val n2 = numbers[i++] + i2
-            val n3 = numbers[i++] + i3
-
-            var nimSum = getNimSum(n1 - 1, n2 - 1, n3 - 1)
-            nimSum = min(nimSum, getNimSum(n1, n2 - 1, n3 - 1))
-            nimSum = min(nimSum, getNimSum(n1 - 1, n2, n3 - 1))
-            nimSum = min(nimSum, getNimSum(n1 - 1, n2 - 1, n3))
-            nimSum = min(nimSum, getNimSum(n1 - 1, n2 + n3))
-            nimSum = min(nimSum, getNimSum(n2 - 1, n3 + n1))
-            nimSum = min(nimSum, getNimSum(n3 - 1, n1 + n2))
+            val nimSum = getNimSumOfBestStep(
+                inputNumbers[0] + i1,
+                inputNumbers[1] + i2,
+                inputNumbers[2] + i3
+            )
             if (nimSum == 0) {
                 expectedAnswer = min(expectedAnswer, i1 + i2 + i3)
             }
         }
-        if (expectedAnswer < answer.toIntOrNull() ?: 100) {
-            return AnswerAttemptVerdict.ACCEPTED to null
-        } else {
+        if (expectedAnswer < answerNumbers.fold(0) { acc, n -> acc + n }) {
             return AnswerAttemptVerdict.REJECTED to null
         }
+
+        val nimSum = getNimSumOfBestStep(
+            inputNumbers[0] + answerNumbers[0],
+            inputNumbers[1] + answerNumbers[1],
+            inputNumbers[2] + answerNumbers[2]
+        )
+
+        return if (nimSum == 0) {
+            AnswerAttemptVerdict.ACCEPTED to null
+        } else {
+            AnswerAttemptVerdict.REJECTED to null
+        }
+    }
+
+    private fun getNimSumOfBestStep(n1: Int, n2: Int, n3: Int): Int {
+        var nimSum = getNimSum(n1 - 1, n2 - 1, n3 - 1)
+        nimSum = min(nimSum, getNimSum(n1, n2 - 1, n3 - 1))
+        nimSum = min(nimSum, getNimSum(n1 - 1, n2, n3 - 1))
+        nimSum = min(nimSum, getNimSum(n1 - 1, n2 - 1, n3))
+        nimSum = min(nimSum, getNimSum(n1 - 1, n2 + n3))
+        nimSum = min(nimSum, getNimSum(n2 - 1, n3 + n1))
+        nimSum = min(nimSum, getNimSum(n3 - 1, n1 + n2))
+        return nimSum
     }
 
     override fun calculateTestPricePercentage(testIdInProblem: Int): Int {

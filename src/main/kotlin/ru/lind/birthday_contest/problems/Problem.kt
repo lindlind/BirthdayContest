@@ -1,10 +1,12 @@
 package ru.lind.birthday_contest.problems
 
 import org.joda.time.DateTime
+import ru.lind.birthday_contest.api.Utils.toPercentageString
 import ru.lind.birthday_contest.api.Utils.toRubString
 import ru.lind.birthday_contest.api.models.ProblemStatsResponse
 import ru.lind.birthday_contest.database.entities.DbAttempt
 import ru.lind.birthday_contest.database.entities.DbTest
+import ru.lind.birthday_contest.database.entities.calculatePrice
 import ru.lind.birthday_contest.database.queries.AttemptQueries
 import ru.lind.birthday_contest.database.queries.ProblemQueries
 import ru.lind.birthday_contest.database.queries.TestQueries
@@ -12,8 +14,6 @@ import ru.lind.birthday_contest.models.*
 import ru.lind.birthday_contest.models.Problem
 import java.lang.IllegalArgumentException
 import java.lang.RuntimeException
-import kotlin.math.ceil
-import kotlin.math.roundToInt
 
 abstract class Problem: Problem {
 
@@ -37,7 +37,12 @@ abstract class Problem: Problem {
 
     fun calculateReward(answerId: Int): Int {
         val dbPriceInfo = ProblemQueries.getPriceInfoByCurrentAttempt(answerId)
-        return dbPriceInfo?.calculatePrice() ?: 0
+        return dbPriceInfo.calculatePrice()
+    }
+
+    fun getBestReward(): Int {
+        val dbPriceInfo = ProblemQueries.getBestReward(problemId)
+        return dbPriceInfo.calculatePrice()
     }
 
     fun getActualTest(): Test? {
@@ -92,14 +97,19 @@ abstract class Problem: Problem {
 
         fun getProblemStats(problemId: Int): ProblemStatsResponse {
             val dbProblem = ProblemQueries.get(problemId) ?: throw RuntimeException("Problem not found")
-            val dbPriceInfo = ProblemQueries.getPriceInfo(problemId)
+            val currentTest = TestQueries.getLastCreated(problemId)
+            val testPricePercentage = currentTest?.pricePercentage ?: 100
+            val lastAttempt = AttemptQueries.getLastCreated(currentTest?.testId)
+            val attemptPricePercentage = lastAttempt?.pricePercentage ?: 100
             val bestReward = ProblemQueries.getBestReward(problemId)
             return ProblemStatsResponse(
                 dbProblem.name,
-                (bestReward?.calculatePrice() ?: 0).toRubString(),
-                dbPriceInfo.problemPrice.toRubString(),
-                dbPriceInfo.testPricePercentage.toRubString(),
-                dbPriceInfo.attemptPricePercentage.toRubString()
+                bestReward.calculatePrice().toRubString(),
+                dbProblem.price.toRubString(),
+                currentTest?.testIdInProblem ?: 1,
+                testPricePercentage.toPercentageString(),
+                lastAttempt?.attemptIdInTest ?: 0,
+                attemptPricePercentage.toPercentageString()
             )
         }
 
