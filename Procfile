@@ -1,1 +1,1 @@
-web: java -jar build/libs/BirthdayContest.jar
+web: java -jar build/libs/BirthdayContest-1.0-all.jar
