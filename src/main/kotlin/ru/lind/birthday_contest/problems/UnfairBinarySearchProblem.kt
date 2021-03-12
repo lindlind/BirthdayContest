@@ -16,6 +16,7 @@ class UnfairBinarySearchProblem private constructor(
     override fun generateTestInput(): String {
         val now = DateTime.now()
         val number = (1 + now.millisOfSecond) * (1 + now.minuteOfHour) * (1 + now.dayOfWeek)
+        println(number)
         return Random.nextInt(0, number).toString()
     }
 
