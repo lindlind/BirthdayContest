@@ -4,6 +4,7 @@ import org.joda.time.DateTime
 import ru.lind.birthday_contest.database.queries.ProblemQueries
 import ru.lind.birthday_contest.models.AnswerAttemptVerdict
 import kotlin.math.max
+import kotlin.random.Random
 
 class UnfairBinarySearchProblem private constructor(
     override val problemId: Int,
@@ -15,7 +16,7 @@ class UnfairBinarySearchProblem private constructor(
     override fun generateTestInput(): String {
         val now = DateTime.now()
         val number = (1 + now.millisOfSecond) * (1 + now.minuteOfHour) * (1 + now.dayOfWeek)
-        return number.toString()
+        return Random.nextInt(0, number).toString()
     }
 
     override fun checkAnswer(input: String, answer: String): Pair<AnswerAttemptVerdict, String?> {
