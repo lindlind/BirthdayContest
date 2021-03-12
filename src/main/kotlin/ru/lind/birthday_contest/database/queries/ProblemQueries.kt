@@ -1,5 +1,6 @@
 package ru.lind.birthday_contest.database.queries
 
+import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.innerJoin
 import org.jetbrains.exposed.sql.select
@@ -10,6 +11,7 @@ import ru.lind.birthday_contest.database.schema.AttemptsTable
 import ru.lind.birthday_contest.database.schema.ProblemsTable
 import ru.lind.birthday_contest.database.schema.TestsTable
 import ru.lind.birthday_contest.models.AnswerAttemptVerdict
+import java.lang.RuntimeException
 
 object ProblemQueries {
 
@@ -19,7 +21,7 @@ object ProblemQueries {
         ProblemsTable, { TestsTable.problemId }, { ProblemsTable.problemId }
     )
 
-    fun getPriceInfo(attemptId: Int?) = transaction {
+    fun getPriceInfoByCurrentAttempt(attemptId: Int?) = transaction {
         val priceInfoRow = attemptId?.let {
             ComplexTable.select {
                 (AttemptsTable.attemptId eq attemptId) and (AttemptsTable.verdict eq AnswerAttemptVerdict.ACCEPTED)
@@ -31,6 +33,28 @@ object ProblemQueries {
                 priceInfoRow[TestsTable.pricePercentage],
                 priceInfoRow[AttemptsTable.pricePercentage]
             )
+        }
+    }
+
+    fun getPriceInfo(problemId: Int?) = transaction {
+        val problemPrice = get(problemId)?.price ?: throw RuntimeException("Problem not found")
+        val test = TestQueries.getLastCreated(problemId)
+        val testPricePercentage = test?.pricePercentage ?: 100
+        val attempt = AttemptQueries.getLastCreated(test?.testId)
+        val attemptPricePercentage = attempt?.pricePercentage ?: 100
+        return@transaction DbPriceInfo(
+            problemPrice,
+            testPricePercentage,
+            attemptPricePercentage
+        )
+    }
+
+    fun getBestReward(problemId: Int?) = transaction {
+        return@transaction problemId?.let {
+            ComplexTable
+                .select { (ProblemsTable.problemId eq problemId) and (AttemptsTable.verdict eq AnswerAttemptVerdict.ACCEPTED) }
+                .mapNotNull { getPriceInfoByCurrentAttempt(it[AttemptsTable.attemptId]) }
+                .maxBy { it.calculatePrice() }
         }
     }
 

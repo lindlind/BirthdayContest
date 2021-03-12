@@ -1,6 +1,8 @@
 package ru.lind.birthday_contest.problems
 
 import org.joda.time.DateTime
+import ru.lind.birthday_contest.api.Utils.toRubString
+import ru.lind.birthday_contest.api.models.ProblemStatsResponse
 import ru.lind.birthday_contest.database.entities.DbAttempt
 import ru.lind.birthday_contest.database.entities.DbTest
 import ru.lind.birthday_contest.database.queries.AttemptQueries
@@ -9,6 +11,7 @@ import ru.lind.birthday_contest.database.queries.TestQueries
 import ru.lind.birthday_contest.models.*
 import ru.lind.birthday_contest.models.Problem
 import java.lang.IllegalArgumentException
+import java.lang.RuntimeException
 import kotlin.math.ceil
 import kotlin.math.roundToInt
 
@@ -33,13 +36,8 @@ abstract class Problem: Problem {
     }
 
     fun calculateReward(answerId: Int): Int {
-        val dbPriceInfo = ProblemQueries.getPriceInfo(answerId)
-        return dbPriceInfo?.let {
-            var price = it.problemPrice.toDouble()
-            price *= it.attemptPricePercentage.toDouble() / 100
-            price *= it.testPricePercentage.toDouble() / 100
-            ceil(price).roundToInt()
-        } ?: 0
+        val dbPriceInfo = ProblemQueries.getPriceInfoByCurrentAttempt(answerId)
+        return dbPriceInfo?.calculatePrice() ?: 0
     }
 
     fun getActualTest(): Test? {
@@ -89,5 +87,22 @@ abstract class Problem: Problem {
     protected abstract fun calculateTestPricePercentage(testIdInProblem: Int): Int
 
     protected abstract fun calculateAnswerAttemptPricePercentage(answerIdInTest: Int): Int
+
+    companion object {
+
+        fun getProblemStats(problemId: Int): ProblemStatsResponse {
+            val dbProblem = ProblemQueries.get(problemId) ?: throw RuntimeException("Problem not found")
+            val dbPriceInfo = ProblemQueries.getPriceInfo(problemId)
+            val bestReward = ProblemQueries.getBestReward(problemId)
+            return ProblemStatsResponse(
+                dbProblem.name,
+                (bestReward?.calculatePrice() ?: 0).toRubString(),
+                dbPriceInfo.problemPrice.toRubString(),
+                dbPriceInfo.testPricePercentage.toRubString(),
+                dbPriceInfo.attemptPricePercentage.toRubString()
+            )
+        }
+
+    }
 
 }

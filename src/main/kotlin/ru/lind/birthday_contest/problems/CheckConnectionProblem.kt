@@ -36,6 +36,9 @@ class CheckConnectionProblem private constructor(
         return max(1, 100 - 1 * (answerIdInTest - 1))
     }
 
+    val testMultiplierRules = "(100 - 2 * (testId - 1))%, testId = 1.."
+    val answerMultiplierRules = "(100 - (attemptId - 1))%, attemptId = 1.."
+
     companion object {
 
         private const val PROBLEM_ID: Int = 0

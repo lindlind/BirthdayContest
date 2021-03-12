@@ -60,4 +60,7 @@ abstract class GraphNimProblem : Problem() {
         }
     }
 
+    val testMultiplierRules = "(100 - 2 * (testId - 1))%, testId = 1.."
+    val answerMultiplierRules = "attemptId = 1..3: 100%, attemptId = 4: 60%, attemptId = 5: 20%"
+
 }

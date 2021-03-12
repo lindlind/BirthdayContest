@@ -44,6 +44,9 @@ class UnfairBinarySearchProblem private constructor(
         }
     }
 
+    val testMultiplierRules = "(100 - 2 * (testId - 1))%, testId = 1.."
+    val answerMultiplierRules = "attemptId = 1..4: 100%, attemptId = 5: 95%, attemptId = 6: 85%, attemptId = 7: 50%, attemptId = 8: 10%"
+
     companion object {
 
         private const val PROBLEM_ID: Int = 1
